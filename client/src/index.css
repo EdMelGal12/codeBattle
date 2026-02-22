@@ -3,7 +3,57 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    font-family: 'Press Start 2P', monospace;
+    image-rendering: pixelated;
+  }
   body {
     @apply bg-gray-950 text-white min-h-screen m-0;
   }
+}
+
+@layer utilities {
+  /* Minecraft-style drop shadow on text */
+  .pixel-shadow {
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.85);
+  }
+  /* Chunky inset border like Minecraft panels */
+  .pixel-panel {
+    border: 3px solid;
+    border-color: #5a5a5a #1a1a1a #1a1a1a #5a5a5a;
+    background-color: #2d2d2d;
+  }
+  /* Minecraft button feel */
+  .pixel-btn {
+    border: 3px solid;
+    border-color: #d4d4d4 #5a5a5a #5a5a5a #d4d4d4;
+    image-rendering: pixelated;
+  }
+  .pixel-btn:hover {
+    filter: brightness(1.15);
+  }
+  .pixel-btn:active {
+    border-color: #5a5a5a #d4d4d4 #d4d4d4 #5a5a5a;
+  }
+}
+
+/* Pixel block chase animation for matchmaking */
+@keyframes pixelChase {
+  0%, 40%, 100% { opacity: 0.15; transform: scale(0.85); }
+  20%           { opacity: 1;    transform: scale(1); }
+}
+
+/* Stamp-in for countdown number */
+@keyframes pixelStamp {
+  0%   { transform: scale(2); opacity: 0; }
+  60%  { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Scanline flicker for results banner */
+@keyframes pixelFlicker {
+  0%, 100% { opacity: 1; }
+  92%       { opacity: 1; }
+  93%       { opacity: 0.7; }
+  94%       { opacity: 1; }
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { PixelSwordsCrossed } from './PixelArt';
 import Leaderboard from './Leaderboard';
 
 export default function LandingPage({ onEnterQueue, leaderboard }) {
@@ -8,59 +9,58 @@ export default function LandingPage({ onEnterQueue, leaderboard }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     const trimmed = username.trim();
-    if (!trimmed) {
-      setError('Please enter a username.');
-      return;
-    }
-    if (trimmed.length > 20) {
-      setError('Username must be 20 characters or fewer.');
-      return;
-    }
+    if (!trimmed) { setError('Enter a username.'); return; }
+    if (trimmed.length > 20) { setError('Max 20 characters.'); return; }
     setError('');
     onEnterQueue(trimmed);
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 gap-10">
-      {/* Title */}
-      <div className="text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight text-white">
-          Code<span className="text-yellow-400">Battle</span>
+
+      {/* Title block */}
+      <div className="flex flex-col items-center gap-5">
+        <PixelSwordsCrossed size={4} />
+        <h1 className="text-3xl text-yellow-400 pixel-shadow tracking-wide">
+          CODEBATTLE
         </h1>
-        <p className="mt-2 text-gray-400 text-lg">
-          1v1 real-time trivia. First to answer wins.
+        <p className="text-[9px] text-gray-400 pixel-shadow text-center leading-6">
+          1V1 REAL-TIME TRIVIA
         </p>
       </div>
 
-      {/* Form */}
+      {/* Form panel */}
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-900 border border-gray-700 rounded-2xl p-8 w-full max-w-sm shadow-xl flex flex-col gap-4"
+        className="pixel-panel w-full max-w-xs flex flex-col gap-5 p-6"
       >
-        <label className="text-gray-300 font-semibold text-sm uppercase tracking-wider">
-          Your username
+        <label className="text-[9px] text-gray-300 pixel-shadow uppercase">
+          Your Username
         </label>
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="e.g. CodeNinja42"
+          placeholder="CODESLAYER99"
           maxLength={20}
-          className="bg-gray-800 text-white border border-gray-600 rounded-lg px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-yellow-400 placeholder-gray-500"
+          className="bg-black text-yellow-400 border-2 border-gray-600 px-3 py-3 text-[10px] focus:outline-none focus:border-yellow-400 placeholder-gray-600 w-full"
           autoFocus
+          style={{ fontFamily: '"Press Start 2P", monospace' }}
         />
-        {error && <p className="text-red-400 text-sm">{error}</p>}
+        {error && (
+          <p className="text-red-400 text-[8px] pixel-shadow">{error}</p>
+        )}
         <button
           type="submit"
-          className="bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-bold py-3 rounded-lg text-base transition-colors"
+          className="pixel-btn bg-yellow-400 text-gray-950 text-[10px] py-3 w-full pixel-shadow uppercase"
         >
           Enter Matchmaking
         </button>
       </form>
 
-      {/* Session Leaderboard */}
+      {/* Leaderboard */}
       {leaderboard.length > 0 && (
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-xs">
           <Leaderboard entries={leaderboard} />
         </div>
       )}

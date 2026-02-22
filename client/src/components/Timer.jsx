@@ -1,29 +1,33 @@
 export default function Timer({ timeLeft, total = 30 }) {
-  const pct = Math.max(0, (timeLeft / total) * 100);
-  const isUrgent = timeLeft < 10;
+  const filled = Math.round((timeLeft / total) * 20); // 20-block bar
+  const isUrgent  = timeLeft < 10;
   const isWarning = timeLeft < 20;
 
-  const barColor = isUrgent
+  const blockColor = isUrgent
     ? 'bg-red-500'
     : isWarning
     ? 'bg-yellow-400'
-    : 'bg-green-400';
+    : 'bg-green-500';
 
   return (
-    <div className="w-full flex flex-col gap-1">
-      <div className="flex justify-between text-sm font-semibold">
-        <span className={isUrgent ? 'text-red-400 animate-pulse' : 'text-gray-400'}>
-          Time Left
+    <div className="w-full flex flex-col gap-2">
+      <div className="flex justify-between items-center">
+        <span className={`text-[8px] pixel-shadow ${isUrgent ? 'text-red-400 animate-pulse' : 'text-gray-400'}`}>
+          TIME
         </span>
-        <span className={isUrgent ? 'text-red-400 font-bold text-lg animate-pulse' : 'text-white font-bold text-lg'}>
+        <span className={`text-[11px] pixel-shadow ${isUrgent ? 'text-red-400 animate-pulse' : 'text-white'}`}>
           {timeLeft}s
         </span>
       </div>
-      <div className="w-full bg-gray-800 rounded-full h-4 overflow-hidden">
-        <div
-          className={`h-4 rounded-full transition-all duration-1000 ${barColor}`}
-          style={{ width: `${pct}%` }}
-        />
+
+      {/* Segmented pixel block bar */}
+      <div className="flex gap-[2px] w-full">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className={`flex-1 h-4 ${i < filled ? blockColor : 'bg-gray-800'}`}
+          />
+        ))}
       </div>
     </div>
   );

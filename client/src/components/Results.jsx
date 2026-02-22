@@ -1,63 +1,81 @@
+import { PixelCrown, PixelSkull, PixelShield } from './PixelArt';
 import Leaderboard from './Leaderboard';
 
 export default function Results({ result, username, opponent, onPlayAgain, leaderboard }) {
   const { winner, yourScore, opponentScore, questions } = result;
   const isWinner = winner === username;
-  const isDraw = winner === null;
+  const isDraw   = winner === null;
+
+  const sprite = isDraw
+    ? <PixelShield size={7} />
+    : isWinner
+    ? <PixelCrown size={7} />
+    : <PixelSkull size={7} />;
+
+  const bannerBorder = isDraw
+    ? 'border-gray-500'
+    : isWinner
+    ? 'border-yellow-400'
+    : 'border-red-500';
+
+  const bannerText = isDraw
+    ? 'text-gray-300'
+    : isWinner
+    ? 'text-yellow-400'
+    : 'text-red-400';
+
+  const bannerLabel = isDraw ? 'DRAW!' : isWinner ? 'YOU WIN!' : 'YOU LOSE!';
 
   return (
-    <div className="flex flex-col items-center min-h-screen px-4 py-10 gap-8 max-w-2xl mx-auto w-full">
+    <div
+      className="flex flex-col items-center min-h-screen px-4 py-10 gap-7 max-w-2xl mx-auto w-full"
+      style={{ animation: 'pixelFlicker 4s linear infinite' }}
+    >
       {/* Banner */}
-      <div
-        className={`w-full rounded-2xl py-10 flex flex-col items-center gap-2 border ${
-          isDraw
-            ? 'bg-gray-800 border-gray-600'
-            : isWinner
-            ? 'bg-yellow-400/10 border-yellow-400'
-            : 'bg-red-500/10 border-red-500'
-        }`}
-      >
-        <span className="text-5xl">{isDraw ? '🤝' : isWinner ? '🏆' : '💀'}</span>
-        <h2
-          className={`text-4xl font-black ${
-            isDraw ? 'text-gray-300' : isWinner ? 'text-yellow-400' : 'text-red-400'
-          }`}
-        >
-          {isDraw ? 'Draw!' : isWinner ? 'You Win!' : 'You Lose!'}
+      <div className={`pixel-panel w-full flex flex-col items-center gap-5 py-10 border-4 ${bannerBorder}`}>
+        {sprite}
+        <h2 className={`text-2xl pixel-shadow ${bannerText}`}>
+          {bannerLabel}
         </h2>
         {!isDraw && (
-          <p className="text-gray-400 text-sm">
+          <p className="text-[8px] text-gray-400 pixel-shadow leading-6 text-center">
             {isWinner
-              ? `Better luck next time, ${opponent?.username || 'opponent'}!`
-              : `Good game, ${winner}!`}
+              ? `GG ${(opponent?.username || 'OPPONENT').toUpperCase()}!`
+              : `GG ${winner?.toUpperCase()}!`}
           </p>
         )}
       </div>
 
       {/* Score breakdown */}
-      <div className="w-full bg-gray-900 border border-gray-700 rounded-2xl p-6 flex justify-around">
-        <div className="text-center">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Your Score</p>
-          <p className="text-4xl font-black text-yellow-400">{yourScore}</p>
-          <p className="text-sm text-gray-400 mt-1">{username}</p>
+      <div className="pixel-panel w-full flex justify-around py-6 px-4">
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-[7px] text-gray-500 pixel-shadow">YOUR SCORE</span>
+          <span className="text-4xl text-yellow-400 pixel-shadow">{yourScore}</span>
+          <span className="text-[7px] text-gray-300 pixel-shadow">{username?.slice(0,10).toUpperCase()}</span>
         </div>
-        <div className="text-gray-600 text-2xl font-bold self-center">VS</div>
-        <div className="text-center">
-          <p className="text-xs text-gray-500 uppercase tracking-wider mb-1">Their Score</p>
-          <p className="text-4xl font-black text-blue-400">{opponentScore}</p>
-          <p className="text-sm text-gray-400 mt-1">{opponent?.username || 'Opponent'}</p>
+        <div className="text-[9px] text-gray-600 pixel-shadow self-center">VS</div>
+        <div className="flex flex-col items-center gap-3">
+          <span className="text-[7px] text-gray-500 pixel-shadow">THEIR SCORE</span>
+          <span className="text-4xl text-blue-400 pixel-shadow">{opponentScore}</span>
+          <span className="text-[7px] text-gray-300 pixel-shadow">
+            {(opponent?.username || 'OPPONENT').slice(0,10).toUpperCase()}
+          </span>
         </div>
       </div>
 
-      {/* Answers review */}
-      {questions && questions.length > 0 && (
-        <div className="w-full bg-gray-900 border border-gray-700 rounded-2xl p-5 flex flex-col gap-3">
-          <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider">Question Answers</h3>
-          <div className="flex flex-col gap-2 max-h-48 overflow-y-auto pr-1">
+      {/* Answer review */}
+      {questions?.length > 0 && (
+        <div className="pixel-panel w-full p-4 flex flex-col gap-3">
+          <h3 className="text-[8px] text-gray-400 pixel-shadow">ANSWERS</h3>
+          <div className="flex flex-col gap-3 max-h-44 overflow-y-auto pr-1">
             {questions.map((q, i) => (
-              <div key={i} className="flex flex-col gap-0.5 text-sm">
-                <p className="text-gray-300 leading-snug">{i + 1}. {q.question}</p>
-                <p className="text-green-400 font-semibold pl-3">→ {q.answer}</p>
+              <div key={i} className="flex flex-col gap-1">
+                <p className="text-[7px] text-gray-300 pixel-shadow leading-5">
+                  {i + 1}. {q.question}
+                </p>
+                <p className="text-[7px] text-green-400 pixel-shadow leading-5 pl-3">
+                  ANS: {q.answer}
+                </p>
               </div>
             ))}
           </div>
@@ -67,12 +85,12 @@ export default function Results({ result, username, opponent, onPlayAgain, leade
       {/* Play Again */}
       <button
         onClick={onPlayAgain}
-        className="bg-yellow-400 hover:bg-yellow-300 text-gray-950 font-bold py-3 px-10 rounded-xl text-base transition-colors"
+        className="pixel-btn bg-yellow-400 text-gray-950 text-[10px] py-3 px-10 pixel-shadow uppercase"
       >
         Play Again
       </button>
 
-      {/* Session Leaderboard */}
+      {/* Session leaderboard */}
       {leaderboard.length > 0 && (
         <div className="w-full">
           <Leaderboard entries={leaderboard} />
