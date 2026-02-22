@@ -1,0 +1,92 @@
+[
+  {
+    "type": "fill",
+    "question": "In JavaScript, which keyword declares a block-scoped variable?",
+    "options": null,
+    "answer": "let"
+  },
+  {
+    "type": "fill",
+    "question": "What HTML tag is used to link an external CSS stylesheet?",
+    "options": null,
+    "answer": "link"
+  },
+  {
+    "type": "fill",
+    "question": "In Python, what built-in function returns the number of items in a list?",
+    "options": null,
+    "answer": "len"
+  },
+  {
+    "type": "fill",
+    "question": "What CSS property changes the text color of an element?",
+    "options": null,
+    "answer": "color"
+  },
+  {
+    "type": "fill",
+    "question": "In JavaScript, which array method adds one or more elements to the end of an array?",
+    "options": null,
+    "answer": "push"
+  },
+  {
+    "type": "fill",
+    "question": "What is the name of the package manager that comes with Node.js?",
+    "options": null,
+    "answer": "npm"
+  },
+  {
+    "type": "fill",
+    "question": "In SQL, which keyword is used to retrieve data from a database table?",
+    "options": null,
+    "answer": "SELECT"
+  },
+  {
+    "type": "fill",
+    "question": "In Python, what keyword is used to define a function?",
+    "options": null,
+    "answer": "def"
+  },
+  {
+    "type": "fill",
+    "question": "What Git command creates a new branch and switches to it?",
+    "options": null,
+    "answer": "checkout -b"
+  },
+  {
+    "type": "fill",
+    "question": "In CSS, which property controls the space between the content and the border of an element?",
+    "options": null,
+    "answer": "padding"
+  },
+  {
+    "type": "fill",
+    "question": "What JavaScript method converts a JSON string into a JavaScript object?",
+    "options": null,
+    "answer": "JSON.parse"
+  },
+  {
+    "type": "fill",
+    "question": "In React, which hook lets you run side effects in a function component?",
+    "options": null,
+    "answer": "useEffect"
+  },
+  {
+    "type": "fill",
+    "question": "What HTTP method is typically used to submit form data to a server?",
+    "options": null,
+    "answer": "POST"
+  },
+  {
+    "type": "fill",
+    "question": "In Python, what symbol is used to start a single-line comment?",
+    "options": null,
+    "answer": "#"
+  },
+  {
+    "type": "fill",
+    "question": "What is the name of the CSS layout model that uses 'flex-direction', 'justify-content', and 'align-items'?",
+    "options": null,
+    "answer": "flexbox"
+  }
+]
