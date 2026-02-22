@@ -6,54 +6,122 @@
   * {
     font-family: 'Press Start 2P', monospace;
     image-rendering: pixelated;
+    border-radius: 0 !important;
+    box-sizing: border-box;
   }
   body {
-    @apply bg-gray-950 text-white min-h-screen m-0;
+    background-color: #000000;
+    color: #cccccc;
+    min-height: 100vh;
+    margin: 0;
   }
 }
 
 @layer utilities {
-  /* Minecraft-style drop shadow on text */
+  /* Hard drop shadow — Minecraft / terminal text style */
   .pixel-shadow {
-    text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.85);
+    text-shadow: 2px 2px 0px #000000;
   }
-  /* Chunky inset border like Minecraft panels */
+
+  /* Terminal panel: flat black with 1px border */
   .pixel-panel {
-    border: 3px solid;
-    border-color: #5a5a5a #1a1a1a #1a1a1a #5a5a5a;
-    background-color: #2d2d2d;
+    background-color: #0d0d0d;
+    border: 1px solid #2a2a2a;
   }
-  /* Minecraft button feel */
+
+  /* Terminal button */
   .pixel-btn {
-    border: 3px solid;
-    border-color: #d4d4d4 #5a5a5a #5a5a5a #d4d4d4;
-    image-rendering: pixelated;
+    background-color: #1a1a1a;
+    border: 1px solid #444444;
+    cursor: pointer;
+    display: inline-block;
   }
   .pixel-btn:hover {
-    filter: brightness(1.15);
+    background-color: #252525;
+    border-color: #888888;
   }
   .pixel-btn:active {
-    border-color: #5a5a5a #d4d4d4 #d4d4d4 #5a5a5a;
+    background-color: #111111;
+    border-color: #333333;
+  }
+  .pixel-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  /* Terminal input */
+  .term-input {
+    background-color: #000000;
+    border: 1px solid #333333;
+    color: #cccccc;
+    outline: none;
+  }
+  .term-input:focus {
+    border-color: #666666;
+  }
+
+  /* Blinking cursor */
+  .cursor::after {
+    content: '_';
+    animation: blink 1s step-end infinite;
+  }
+
+  /* Dim horizontal rule */
+  .term-divider {
+    border: none;
+    border-top: 1px solid #1e1e1e;
+    width: 100%;
   }
 }
 
-/* Pixel block chase animation for matchmaking */
-@keyframes pixelChase {
-  0%, 40%, 100% { opacity: 0.15; transform: scale(0.85); }
-  20%           { opacity: 1;    transform: scale(1); }
-}
+/* ── Animations ─────────────────────────────────────────────────────────── */
 
-/* Stamp-in for countdown number */
-@keyframes pixelStamp {
-  0%   { transform: scale(2); opacity: 0; }
-  60%  { transform: scale(0.9); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* Scanline flicker for results banner */
-@keyframes pixelFlicker {
+@keyframes blink {
   0%, 100% { opacity: 1; }
-  92%       { opacity: 1; }
-  93%       { opacity: 0.7; }
-  94%       { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* Pixel block loader (matchmaking) */
+@keyframes pixelChase {
+  0%, 40%, 100% { opacity: 0.12; transform: scaleY(0.6); }
+  20%           { opacity: 1;    transform: scaleY(1); }
+}
+
+/* Countdown stamp */
+@keyframes pixelStamp {
+  0%   { transform: scale(2.2); opacity: 0; }
+  55%  { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Results subtle flicker */
+@keyframes pixelFlicker {
+  0%, 89%, 91%, 100% { opacity: 1; }
+  90%                { opacity: 0.75; }
+}
+
+/* Firework particle fly-out */
+@keyframes fireworkFly {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translate(var(--fx), var(--fy)) scale(0); opacity: 0; }
+}
+
+/* Scanline CRT overlay — applied to #root via App.jsx wrapper */
+.scanlines {
+  position: relative;
+}
+.scanlines::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent        0px,
+    transparent        3px,
+    rgba(0,0,0,0.08)   3px,
+    rgba(0,0,0,0.08)   4px
+  );
+  pointer-events: none;
+  z-index: 999;
 }

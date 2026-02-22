@@ -4,13 +4,13 @@ import Leaderboard from './Leaderboard';
 
 export default function LandingPage({ onEnterQueue, leaderboard }) {
   const [username, setUsername] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError]       = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const trimmed = username.trim();
-    if (!trimmed) { setError('Enter a username.'); return; }
-    if (trimmed.length > 20) { setError('Max 20 characters.'); return; }
+    if (!trimmed)            { setError('USERNAME REQUIRED.'); return; }
+    if (trimmed.length > 20) { setError('MAX 20 CHARS.'); return; }
     setError('');
     onEnterQueue(trimmed);
   };
@@ -18,47 +18,43 @@ export default function LandingPage({ onEnterQueue, leaderboard }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-4 gap-10">
 
-      {/* Title block */}
       <div className="flex flex-col items-center gap-5">
         <PixelSwordsCrossed size={4} />
-        <h1 className="text-3xl text-yellow-400 pixel-shadow tracking-wide">
-          CODEBATTLE
-        </h1>
-        <p className="text-[9px] text-gray-400 pixel-shadow text-center leading-6">
-          1V1 REAL-TIME TRIVIA
+        <div className="text-center">
+          <p className="text-[8px] text-gray-800 pixel-shadow mb-2">================================</p>
+          <h1 className="text-2xl text-red-500 pixel-shadow cursor">CODEBATTLE</h1>
+          <p className="text-[8px] text-gray-800 pixel-shadow mt-2">================================</p>
+        </div>
+        <p className="text-[8px] text-gray-600 pixel-shadow leading-6 text-center">
+          1V1 REAL-TIME TRIVIA COMBAT
         </p>
       </div>
 
-      {/* Form panel */}
-      <form
-        onSubmit={handleSubmit}
-        className="pixel-panel w-full max-w-xs flex flex-col gap-5 p-6"
-      >
-        <label className="text-[9px] text-gray-300 pixel-shadow uppercase">
-          Your Username
-        </label>
-        <input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="CODESLAYER99"
-          maxLength={20}
-          className="bg-black text-yellow-400 border-2 border-gray-600 px-3 py-3 text-[10px] focus:outline-none focus:border-yellow-400 placeholder-gray-600 w-full"
-          autoFocus
-          style={{ fontFamily: '"Press Start 2P", monospace' }}
-        />
-        {error && (
-          <p className="text-red-400 text-[8px] pixel-shadow">{error}</p>
-        )}
-        <button
-          type="submit"
-          className="pixel-btn bg-yellow-400 text-gray-950 text-[10px] py-3 w-full pixel-shadow uppercase"
-        >
-          Enter Matchmaking
-        </button>
-      </form>
+      <div className="pixel-panel w-full max-w-xs flex flex-col gap-5 p-6 border border-gray-800">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+          <label className="text-[8px] text-gray-600 pixel-shadow">&gt; ENTER USERNAME</label>
+          <input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="PLAYER_001"
+            maxLength={20}
+            className="term-input w-full px-3 py-3 text-[10px] text-red-400 pixel-shadow"
+            style={{ fontFamily: '"Press Start 2P", monospace' }}
+            autoFocus
+          />
+          {error && <p className="text-[8px] text-red-600 pixel-shadow">{error}</p>}
 
-      {/* Leaderboard */}
+          {/* No pixel-shadow on button — fixes the doubled text rendering */}
+          <button
+            type="submit"
+            className="pixel-btn text-red-500 text-[9px] py-3 w-full uppercase border border-red-900 hover:border-red-500"
+          >
+            &gt; ENTER MATCHMAKING
+          </button>
+        </form>
+      </div>
+
       {leaderboard.length > 0 && (
         <div className="w-full max-w-xs">
           <Leaderboard entries={leaderboard} />

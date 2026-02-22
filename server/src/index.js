@@ -13,10 +13,7 @@ app.use(express.json());
 
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: CLIENT_ORIGIN,
-    methods: ['GET', 'POST'],
-  },
+  cors: { origin: CLIENT_ORIGIN, methods: ['GET', 'POST'] },
 });
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
@@ -24,7 +21,7 @@ app.get('/health', (req, res) => res.json({ status: 'ok' }));
 io.on('connection', (socket) => {
   console.log(`[Socket] Connected: ${socket.id}`);
 
-  socket.on('join_queue', ({ username }) => {
+  socket.on('join_queue', ({ username, streak }) => {
     if (!username || typeof username !== 'string') {
       socket.emit('error', { message: 'Invalid username.' });
       return;
@@ -34,20 +31,13 @@ io.on('connection', (socket) => {
       socket.emit('error', { message: 'Username cannot be empty.' });
       return;
     }
-    joinQueue(socket, clean, io);
+    const safeStreak = Math.max(0, parseInt(streak) || 0);
+    joinQueue(socket, clean, safeStreak, io);
   });
 
-  socket.on('leave_queue', () => {
-    leaveQueue(socket.id);
-  });
+  socket.on('leave_queue', () => leaveQueue(socket.id));
 
-  socket.on('submit_answer', (payload) => {
-    handleAnswer(socket, payload, io);
-  });
-
-  socket.on('play_again', () => {
-    // Client will re-emit join_queue; nothing to do here
-  });
+  socket.on('submit_answer', (payload) => handleAnswer(socket, payload, io));
 
   socket.on('disconnect', () => {
     console.log(`[Socket] Disconnected: ${socket.id}`);

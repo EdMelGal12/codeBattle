@@ -6,74 +6,70 @@ import Countdown from './components/Countdown';
 import GameRoom from './components/GameRoom';
 import Results from './components/Results';
 
-// App state machine: 'landing' | 'queue' | 'countdown' | 'game' | 'results'
-
 export default function App() {
-  const [phase, setPhase] = useState('landing');
-  const [username, setUsername] = useState('');
-  const [opponent, setOpponent] = useState(null);
-  const [countdownValue, setCountdownValue] = useState(5);
-  const [questions, setQuestions] = useState([]);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const [myScore, setMyScore] = useState(0);
-  const [opponentScore, setOpponentScore] = useState(0);
-  const [gameResult, setGameResult] = useState(null);
+  const [phase, setPhase]             = useState('landing');
+  const [username, setUsername]       = useState('');
+  const [opponent, setOpponent]       = useState(null);
+  const [countdownValue, setCountdown]= useState(5);
+  const [questions, setQuestions]     = useState([]);
+  const [timeLeft, setTimeLeft]       = useState(30);
+  const [myScore, setMyScore]         = useState(0);
+  const [opponentScore, setOppScore]  = useState(0);
+  const [gameResult, setGameResult]   = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [winStreak, setWinStreak]     = useState(0);  // consecutive wins
+  const [multiplier, setMultiplier]   = useState(1);  // active game multiplier
 
-  const updateLeaderboard = useCallback((result, myName) => {
+  const upsertEntry = (list, name, won, draw) => {
+    const next = [...list];
+    const idx  = next.findIndex((e) => e.username === name);
+    if (idx === -1) {
+      next.push({ username: name, wins: won ? 1 : 0, losses: !won && !draw ? 1 : 0, draws: draw ? 1 : 0 });
+    } else {
+      next[idx] = {
+        ...next[idx],
+        wins:   next[idx].wins   + (won           ? 1 : 0),
+        losses: next[idx].losses + (!won && !draw ? 1 : 0),
+        draws:  next[idx].draws  + (draw          ? 1 : 0),
+      };
+    }
+    return next;
+  };
+
+  const updateLeaderboard = useCallback((result, myName, oppName) => {
     setLeaderboard((prev) => {
-      const next = [...prev];
-      const idx = next.findIndex((e) => e.username === myName);
-      const won = result.winner === myName;
-      const draw = result.winner === null;
-
-      if (idx === -1) {
-        next.push({
-          username: myName,
-          wins: won ? 1 : 0,
-          losses: !won && !draw ? 1 : 0,
-          draws: draw ? 1 : 0,
-        });
-      } else {
-        next[idx] = {
-          ...next[idx],
-          wins: next[idx].wins + (won ? 1 : 0),
-          losses: next[idx].losses + (!won && !draw ? 1 : 0),
-          draws: (next[idx].draws || 0) + (draw ? 1 : 0),
-        };
-      }
+      const draw   = result.winner === null;
+      const myWon  = result.winner === myName;
+      const oppWon = result.winner === oppName;
+      let next = upsertEntry(prev, myName, myWon, draw);
+      if (oppName) next = upsertEntry(next, oppName, oppWon, draw);
       return next;
     });
   }, []);
 
   useSocket({
-    match_found: ({ opponent: opp }) => {
+    match_found: ({ opponent: opp, multiplier: mult }) => {
       setOpponent(opp);
-      setCountdownValue(5);
+      setCountdown(5);
+      setMultiplier(mult ?? 1);
       setPhase('countdown');
     },
-    countdown: ({ value }) => {
-      setCountdownValue(value);
-    },
-    game_start: ({ questions: qs }) => {
+    countdown:         ({ value })        => setCountdown(value),
+    game_start:        ({ questions: qs }) => {
       setQuestions(qs);
       setMyScore(0);
-      setOpponentScore(0);
+      setOppScore(0);
       setTimeLeft(30);
       setPhase('game');
     },
-    timer_tick: ({ timeLeft: tl }) => {
-      setTimeLeft(tl);
-    },
-    answer_result: ({ yourScore }) => {
-      setMyScore(yourScore);
-    },
-    opponent_progress: ({ score }) => {
-      setOpponentScore(score);
-    },
+    timer_tick:        ({ timeLeft: tl }) => setTimeLeft(tl),
+    answer_result:     ({ yourScore })    => setMyScore(yourScore),
+    opponent_progress: ({ score })        => setOppScore(score),
     game_over: (result) => {
       setGameResult(result);
-      updateLeaderboard(result, username);
+      updateLeaderboard(result, username, opponent?.username);
+      const won = result.winner === username;
+      setWinStreak((prev) => (won ? prev + 1 : 0));
       setPhase('results');
     },
     error: ({ message }) => {
@@ -85,7 +81,7 @@ export default function App() {
   const handleEnterQueue = useCallback((name) => {
     setUsername(name);
     setPhase('queue');
-    getSocket().emit('join_queue', { username: name });
+    getSocket().emit('join_queue', { username: name, streak: 0 });
   }, []);
 
   const handleLeaveQueue = useCallback(() => {
@@ -98,26 +94,18 @@ export default function App() {
     setOpponent(null);
     setQuestions([]);
     setMyScore(0);
-    setOpponentScore(0);
+    setOppScore(0);
     setPhase('queue');
-    getSocket().emit('join_queue', { username });
-  }, [username]);
+    // winStreak is already updated by game_over handler before Play Again is clicked
+    getSocket().emit('join_queue', { username, streak: winStreak });
+  }, [username, winStreak]);
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col">
-      {phase === 'landing' && (
-        <LandingPage
-          onEnterQueue={handleEnterQueue}
-          leaderboard={leaderboard}
-        />
-      )}
-      {phase === 'queue' && (
-        <Matchmaking username={username} onCancel={handleLeaveQueue} />
-      )}
-      {phase === 'countdown' && (
-        <Countdown value={countdownValue} opponent={opponent} />
-      )}
-      {phase === 'game' && (
+    <div className="scanlines min-h-screen bg-black text-gray-300 flex flex-col">
+      {phase === 'landing'   && <LandingPage  onEnterQueue={handleEnterQueue} leaderboard={leaderboard} />}
+      {phase === 'queue'     && <Matchmaking  username={username} onCancel={handleLeaveQueue} winStreak={winStreak} />}
+      {phase === 'countdown' && <Countdown    value={countdownValue} opponent={opponent} multiplier={multiplier} />}
+      {phase === 'game'      && (
         <GameRoom
           questions={questions}
           timeLeft={timeLeft}
@@ -125,6 +113,8 @@ export default function App() {
           opponentScore={opponentScore}
           username={username}
           opponent={opponent}
+          multiplier={multiplier}
+          winStreak={winStreak}
         />
       )}
       {phase === 'results' && gameResult && (
@@ -134,6 +124,7 @@ export default function App() {
           opponent={opponent}
           onPlayAgain={handlePlayAgain}
           leaderboard={leaderboard}
+          winStreak={winStreak}
         />
       )}
     </div>

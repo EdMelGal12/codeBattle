@@ -1,47 +1,58 @@
 import { PixelSword } from './PixelArt';
 
-export default function Matchmaking({ username, onCancel }) {
+function multLabel(m) {
+  return Number.isInteger(m) ? `${m}x` : `${m.toFixed(1)}x`;
+}
+
+export default function Matchmaking({ username, onCancel, winStreak }) {
+  const multiplier = Math.min(1 + winStreak * 0.5, 3);
+  const showStreak = winStreak > 0;
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-10 px-4">
 
-      {/* Pixel sword spinner */}
-      <div
-        className="flex items-center justify-center"
-        style={{ animation: 'pixelFlicker 2s linear infinite' }}
-      >
+      <div style={{ animation: 'pixelFlicker 3s linear infinite' }}>
         <PixelSword size={6} />
       </div>
 
-      {/* Status text */}
-      <div className="flex flex-col items-center gap-4 text-center">
-        <p className="text-yellow-400 text-[11px] pixel-shadow">
-          FINDING OPPONENT...
+      <div className="pixel-panel w-full max-w-xs p-6 flex flex-col gap-5 border border-gray-800">
+        <p className="text-[8px] text-gray-600 pixel-shadow">&gt; STATUS</p>
+        <hr className="term-divider" />
+        <p className="text-[10px] text-red-500 pixel-shadow cursor leading-7">
+          SEARCHING FOR OPPONENT
         </p>
-        <p className="text-gray-500 text-[8px] pixel-shadow leading-6">
-          SEARCHING AS{' '}
-          <span className="text-white">{username.toUpperCase()}</span>
+        <p className="text-[8px] text-gray-600 pixel-shadow leading-6">
+          USER: <span className="text-gray-300">{username.toUpperCase()}</span>
         </p>
+        {showStreak && (
+          <>
+            <hr className="term-divider" />
+            <p className="text-[8px] text-gray-600 pixel-shadow leading-6">
+              STREAK: <span className="text-red-500">{winStreak}</span>
+            </p>
+            <p className="text-[8px] text-gray-600 pixel-shadow leading-6">
+              MULTI:  <span className="text-red-500">{multLabel(multiplier)}</span>
+            </p>
+          </>
+        )}
       </div>
 
-      {/* Pixel block chase loader */}
-      <div className="flex gap-2">
-        {[0, 1, 2, 3, 4].map((i) => (
+      <div className="flex gap-[3px]">
+        {[0, 1, 2, 3, 4, 5, 6].map((i) => (
           <div
             key={i}
-            className="w-4 h-4 bg-yellow-400"
-            style={{
-              animation: 'pixelChase 1.2s linear infinite',
-              animationDelay: `${i * 0.24}s`,
-            }}
+            className="w-3 h-6 bg-red-700"
+            style={{ animation: 'pixelChase 1.4s linear infinite', animationDelay: `${i * 0.2}s` }}
           />
         ))}
       </div>
 
+      {/* No pixel-shadow on button */}
       <button
         onClick={onCancel}
-        className="text-gray-600 hover:text-gray-300 text-[8px] pixel-shadow underline"
+        className="pixel-btn text-[8px] text-gray-700 px-4 py-2 hover:text-gray-400"
       >
-        CANCEL
+        &gt; CANCEL
       </button>
     </div>
   );
