@@ -99,8 +99,9 @@ export default function App() {
     setQuestions([]);
     setMyScore(0);
     setOpponentScore(0);
-    setPhase('landing');
-  }, []);
+    setPhase('queue');
+    getSocket().emit('join_queue', { username });
+  }, [username]);
 
   return (
     <div className="min-h-screen bg-gray-950 text-white flex flex-col">
