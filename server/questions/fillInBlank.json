@@ -88,5 +88,95 @@
     "question": "What is the name of the CSS layout model that uses 'flex-direction', 'justify-content', and 'align-items'?",
     "options": null,
     "answer": "flexbox"
+  },
+  {
+    "type": "fill",
+    "question": "What Big-O notation describes the time complexity of binary search?",
+    "options": null,
+    "answer": "O(log n)"
+  },
+  {
+    "type": "fill",
+    "question": "Which data structure operates on a Last-In, First-Out (LIFO) principle?",
+    "options": null,
+    "answer": "stack"
+  },
+  {
+    "type": "fill",
+    "question": "Which data structure operates on a First-In, First-Out (FIFO) principle?",
+    "options": null,
+    "answer": "queue"
+  },
+  {
+    "type": "fill",
+    "question": "What data structure uses key-value pairs for O(1) average-case lookups?",
+    "options": null,
+    "answer": "hash table"
+  },
+  {
+    "type": "fill",
+    "question": "In JavaScript, which React hook is used to manage local component state?",
+    "options": null,
+    "answer": "useState"
+  },
+  {
+    "type": "fill",
+    "question": "In React, which hook memoizes an expensive computed value to avoid recalculation?",
+    "options": null,
+    "answer": "useMemo"
+  },
+  {
+    "type": "fill",
+    "question": "What HTTP status code is returned when a requested resource is not found?",
+    "options": null,
+    "answer": "404"
+  },
+  {
+    "type": "fill",
+    "question": "What does REST stand for in web API design?",
+    "options": null,
+    "answer": "Representational State Transfer"
+  },
+  {
+    "type": "fill",
+    "question": "What data interchange format uses curly braces and key-value pairs, commonly used in APIs?",
+    "options": null,
+    "answer": "JSON"
+  },
+  {
+    "type": "fill",
+    "question": "In Python, what keyword is used to handle exceptions?",
+    "options": null,
+    "answer": "except"
+  },
+  {
+    "type": "fill",
+    "question": "In Git, what command stages all modified files for the next commit?",
+    "options": null,
+    "answer": "git add"
+  },
+  {
+    "type": "fill",
+    "question": "What Big-O notation describes the time complexity of iterating through an array once?",
+    "options": null,
+    "answer": "O(n)"
+  },
+  {
+    "type": "fill",
+    "question": "In CSS, what property makes an element invisible but still occupies space?",
+    "options": null,
+    "answer": "visibility"
+  },
+  {
+    "type": "fill",
+    "question": "In JavaScript, what method removes the last element from an array and returns it?",
+    "options": null,
+    "answer": "pop"
+  },
+  {
+    "type": "fill",
+    "question": "In SQL, which clause is used to filter rows returned by a SELECT query?",
+    "options": null,
+    "answer": "WHERE"
   }
 ]

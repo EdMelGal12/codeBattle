@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\":*)",
+      "Bash(tail:*)",
+      "Bash(node:*)",
+      "Bash(echo no python:*)",
+      "Bash(head:*)"
+    ]
+  }
+}

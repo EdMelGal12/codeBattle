@@ -9,7 +9,7 @@ function multLabel(m) {
   return Number.isInteger(m) ? `${m}x` : `${m.toFixed(1)}x`;
 }
 
-export default function GameRoom({ questions, timeLeft, myScore, opponentScore, username, opponent, multiplier, winStreak }) {
+export default function GameRoom({ questions, timeLeft, myScore, opponentScore, username, opponent, multiplier, winStreak, myElo, opponentElo }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answeredMap,  setAnsweredMap]  = useState({});
 
@@ -73,8 +73,10 @@ export default function GameRoom({ questions, timeLeft, myScore, opponentScore, 
         myScore={myScore}
         opponentName={opponent?.username}
         opponentScore={opponentScore}
+        myElo={myElo}
+        opponentElo={opponentElo}
       />
-      <Timer timeLeft={timeLeft} total={30} />
+      <Timer timeLeft={timeLeft} total={60} />
 
       {/* Progress dots */}
       <div className="flex gap-[3px]">

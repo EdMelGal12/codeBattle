@@ -40,8 +40,8 @@ async function fetchTrivia(amount, type) {
 
 async function fetchQuestions() {
   const [mcqRaw, boolRaw] = await Promise.all([
-    fetchTrivia(8, 'multiple'),
-    fetchTrivia(4, 'boolean'),
+    fetchTrivia(12, 'multiple'),
+    fetchTrivia(6, 'boolean'),
   ]);
 
   const mcqQuestions = mcqRaw.map((q) => {
@@ -64,9 +64,9 @@ async function fetchQuestions() {
   // Pick 2 random fill-in-blank questions
   const fibPicked = shuffle(fibQuestions).slice(0, 2);
 
-  // Combine: 6 MCQ + 2 boolean + 2 FIB = 10 questions
-  const mcqPicked = shuffle(mcqQuestions).slice(0, 6);
-  const boolPicked = shuffle(boolQuestions).slice(0, 2);
+  // Combine: 7 MCQ + 3 boolean + 2 FIB = 12 questions
+  const mcqPicked  = shuffle(mcqQuestions).slice(0, 7);
+  const boolPicked = shuffle(boolQuestions).slice(0, 3);
 
   const all = shuffle([...mcqPicked, ...boolPicked, ...fibPicked]);
   return all;

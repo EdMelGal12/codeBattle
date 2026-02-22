@@ -1,9 +1,15 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    nodePolyfills({
+      include: ['buffer', 'process', 'stream', 'util', 'crypto'],
+      globals: { Buffer: true, global: true, process: true },
+    }),
+  ],
   server: {
     proxy: {
       '/socket.io': {
@@ -13,4 +19,8 @@ export default defineConfig({
       },
     },
   },
-})
+  define: {
+    // Anchor / web3.js expect these globals in browser
+    'process.env.BROWSER': JSON.stringify(true),
+  },
+});

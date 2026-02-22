@@ -1,4 +1,4 @@
-export default function ScorePanel({ username, myScore, opponentName, opponentScore }) {
+export default function ScorePanel({ username, myScore, opponentName, opponentScore, myElo, opponentElo }) {
   return (
     <div className="pixel-panel flex justify-between items-center px-5 py-4 border border-gray-800">
       {/* You — RED */}
@@ -8,6 +8,9 @@ export default function ScorePanel({ username, myScore, opponentName, opponentSc
         <span className="text-[7px] text-gray-400 pixel-shadow truncate max-w-[90px]">
           {username?.slice(0, 10).toUpperCase()}
         </span>
+        {myElo != null && (
+          <span className="text-[6px] text-red-800 pixel-shadow">[{myElo}]</span>
+        )}
       </div>
 
       <div className="flex flex-col items-center gap-1">
@@ -21,6 +24,9 @@ export default function ScorePanel({ username, myScore, opponentName, opponentSc
         <span className="text-[7px] text-gray-400 pixel-shadow truncate max-w-[90px]">
           {(opponentName || 'OPPONENT').slice(0, 10).toUpperCase()}
         </span>
+        {opponentElo != null && (
+          <span className="text-[6px] text-blue-800 pixel-shadow">[{opponentElo}]</span>
+        )}
       </div>
     </div>
   );

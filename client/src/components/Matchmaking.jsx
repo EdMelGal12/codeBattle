@@ -4,7 +4,7 @@ function multLabel(m) {
   return Number.isInteger(m) ? `${m}x` : `${m.toFixed(1)}x`;
 }
 
-export default function Matchmaking({ username, onCancel, winStreak }) {
+export default function Matchmaking({ username, onCancel, winStreak, wagerAmount }) {
   const multiplier = Math.min(1 + winStreak * 0.5, 3);
   const showStreak = winStreak > 0;
 
@@ -32,6 +32,14 @@ export default function Matchmaking({ username, onCancel, winStreak }) {
             </p>
             <p className="text-[8px] text-gray-600 pixel-shadow leading-6">
               MULTI:  <span className="text-red-500">{multLabel(multiplier)}</span>
+            </p>
+          </>
+        )}
+        {wagerAmount > 0 && (
+          <>
+            <hr className="term-divider" />
+            <p className="text-[8px] text-gray-600 pixel-shadow leading-6">
+              WAGER: <span className="text-yellow-500">{(wagerAmount / 1e9).toFixed(3)} SOL</span>
             </p>
           </>
         )}

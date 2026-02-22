@@ -6,24 +6,28 @@ function multLabel(m) {
   return Number.isInteger(m) ? `${m}x` : `${m.toFixed(1)}x`;
 }
 
-export default function Results({ result, username, opponent, onPlayAgain, leaderboard, winStreak }) {
-  const { winner, yourScore, opponentScore, questions } = result;
+export default function Results({ result, username, opponent, onPlayAgain, leaderboard, winStreak, myElo, myEloDelta, opponentElo }) {
+  const { winner, yourScore, opponentScore, questions, eloChanges } = result;
   const isWinner = winner === username;
   const isDraw   = winner === null;
 
   const sprite      = isDraw ? <PixelShield size={7} /> : isWinner ? <PixelCrown size={7} /> : <PixelSkull size={7} />;
-  const bannerBorder = isDraw ? '#333333' : isWinner ? '#cc2222' : '#333333';
-  const bannerBg     = isDraw ? '#0d0d0d' : isWinner ? '#0f0000' : '#0a0000';
-  const labelColor   = isDraw ? '#666666' : isWinner ? '#ff4444' : '#444444';
+  const bannerBorder = isDraw ? '#333333' : isWinner ? '#1a4a8a' : '#333333';
+  const bannerBg     = isDraw ? '#0d0d0d' : isWinner ? '#00060f' : '#0a0000';
+  const labelColor   = isDraw ? '#666666' : isWinner ? '#4499ff' : '#444444';
   const bannerLabel  = isDraw ? 'DRAW' : isWinner ? 'YOU WIN' : 'YOU LOSE';
 
-  // Streak shown on win (it's already been incremented by the time Results renders)
   const streakOnWin = isWinner ? winStreak : 0;
+
+  // ELO display
+  const myChange  = eloChanges?.[username];
+  const oppName   = opponent?.username;
+  const oppChange = oppName ? eloChanges?.[oppName] : null;
 
   return (
     <div className="flex flex-col items-center min-h-screen px-4 py-8 gap-6 max-w-2xl mx-auto w-full">
 
-      {/* Pixel fireworks — winner only, intensity scales with streak */}
+      {/* Pixel fireworks — winner only */}
       {isWinner && <PixelFireworks streak={streakOnWin} />}
 
       {/* Banner */}
@@ -38,9 +42,9 @@ export default function Results({ result, username, opponent, onPlayAgain, leade
 
         {/* Streak badge — winner only */}
         {isWinner && streakOnWin > 0 && (
-          <div className="pixel-panel px-5 py-2 border border-red-900 flex flex-col items-center gap-2 mt-1">
+          <div className="pixel-panel px-5 py-2 border border-blue-900 flex flex-col items-center gap-2 mt-1">
             <span className="text-[7px] text-gray-600 pixel-shadow">WIN STREAK</span>
-            <span className="text-xl text-red-500 pixel-shadow">{streakOnWin}</span>
+            <span className="text-xl text-blue-500 pixel-shadow">{streakOnWin}</span>
             <span className="text-[7px] text-gray-600 pixel-shadow">
               NEXT GAME: {multLabel(Math.min(1 + streakOnWin * 0.5, 3))} MULTIPLIER
             </span>
@@ -55,6 +59,44 @@ export default function Results({ result, username, opponent, onPlayAgain, leade
           </p>
         )}
       </div>
+
+      {/* ELO Change panel */}
+      {(myChange || oppChange) && (
+        <div className="pixel-panel w-full flex flex-col gap-3 py-5 px-6 border border-gray-800">
+          <h3 className="text-[8px] text-gray-600 pixel-shadow">&gt; ELO CHANGE</h3>
+          <hr className="term-divider" />
+          <div className="flex justify-around">
+            {myChange && (
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[7px] text-gray-500 pixel-shadow">{username?.slice(0, 10).toUpperCase()}</span>
+                <span className="text-[8px] text-gray-400 pixel-shadow">
+                  {myChange.oldElo} → {myChange.newElo}
+                </span>
+                <span
+                  className="text-[8px] pixel-shadow"
+                  style={{ color: myChange.delta >= 0 ? '#22c55e' : '#ef4444' }}
+                >
+                  {myChange.delta >= 0 ? '+' : ''}{myChange.delta}
+                </span>
+              </div>
+            )}
+            {oppChange && oppName && (
+              <div className="flex flex-col items-center gap-2">
+                <span className="text-[7px] text-gray-500 pixel-shadow">{oppName.slice(0, 10).toUpperCase()}</span>
+                <span className="text-[8px] text-gray-400 pixel-shadow">
+                  {oppChange.oldElo} → {oppChange.newElo}
+                </span>
+                <span
+                  className="text-[8px] pixel-shadow"
+                  style={{ color: oppChange.delta >= 0 ? '#22c55e' : '#ef4444' }}
+                >
+                  {oppChange.delta >= 0 ? '+' : ''}{oppChange.delta}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Score breakdown */}
       <div className="pixel-panel w-full flex justify-around py-6 px-4 border border-gray-800">
@@ -93,10 +135,10 @@ export default function Results({ result, username, opponent, onPlayAgain, leade
         </div>
       )}
 
-      {/* Play Again — no pixel-shadow on button text (fixes doubled text bug) */}
+      {/* Play Again */}
       <button
         onClick={onPlayAgain}
-        className="pixel-btn text-red-500 text-[10px] py-3 px-10 uppercase border border-red-900 hover:border-red-500"
+        className={`pixel-btn text-[10px] py-3 px-10 uppercase ${isWinner ? 'text-blue-400 border border-blue-900 hover:border-blue-500' : 'text-red-500 border border-red-900 hover:border-red-500'}`}
       >
         &gt; Play Again
       </button>
